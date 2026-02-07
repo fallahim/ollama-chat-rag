@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>چت‌بات هوشمند</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="logo">
+        <span class="logo-icon">◆</span>
+        <h1>چت‌بات</h1>
+      </div>
+      <div class="model-section">
+        <label for="model-select">مدل</label>
+        <select id="model-select">
+          <option value="">در حال بارگذاری...</option>
+        </select>
+      </div>
+      <div class="status" id="status">
+        <span class="status-dot"></span>
+        <span class="status-text">در حال اتصال...</span>
+      </div>
+      <button type="button" class="btn-new" id="btn-new">مکالمه جدید</button>
+    </aside>
+    <main class="main">
+      <div class="chat" id="chat">
+        <div class="welcome" id="welcome">
+          <h2>سلام</h2>
+          <p>هر سوالی داری بپرس. از مدل اوپن‌سورس روی همین دستگاه استفاده می‌کنم.</p>
+          <p class="hint">اگر Ollama اجرا نیست، اول آن را نصب و اجرا کن. برای فارسی خوب: <code>ollama run qwen2.5</code></p>
+        </div>
+      </div>
+      <form class="form" id="form">
+        <textarea id="input" rows="1" placeholder="پیام تو..." maxlength="8000"></textarea>
+        <button type="submit" class="btn-send" id="btn-send" aria-label="ارسال">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
+          </svg>
+        </button>
+      </form>
+    </main>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
