@@ -4,9 +4,9 @@
   <a href="./README.fa.md"><img src="https://img.shields.io/badge/فارسی-فعال-2563eb?style=for-the-badge&logo=readme&logoColor=white" alt="فارسی"/></a>
 </p>
 
-# چت‌بات — دستیار محلی با مدل اوپن‌سورس
+# ollama-chat-rag
 
-یک برنامه چت **خودمیزبان** مبتنی بر **[Ollama](https://ollama.com)** و مدل‌های زبانی اوپن‌سورس. گفتگو روی سیستم شما اجرا می‌شود و به API پولی نیاز ندارد. رابط وب **فارسی (RTL)** و انگلیسی دارد، با **RAG** روی اسناد و **جستجوی وب** (DuckDuckGo).
+برنامه چت **خودمیزبان** با **[Ollama](https://ollama.com)** و مدل‌های اوپن‌سورس. گفتگو روی سیستم شما اجرا می‌شود و به API پولی نیاز ندارد. رابط وب **فارسی (RTL)** است؛ نام مخزن به لایه **RAG** (پرسش از روی اسناد) که در نقشه توسعه است اشاره دارد.
 
 ---
 
@@ -16,63 +16,111 @@
 |--------|--------|
 | **مدل محلی** | چت با Ollama |
 | **استریم** | پاسخ لحظه‌ای (SSE) |
-| **RAG** | PDF/DOCX؛ بازیابی هیبرید + re-rank |
-| **جستجوی وب** | DuckDuckGo بدون API Key |
-| **چند مدل** | انتخاب از UI |
-| **نمایش فکر** | روشن/خاموش استدلال مدل |
-| **پیشرفت آپلود** | آپلود چندفایلی با SSE |
-| **REST API** | سلامت، مدل‌ها، چت، اسناد |
+| **چند مدل** | انتخاب مدل از سایدبار |
+| **REST API** | سلامت، لیست مدل‌ها، چت |
+| **رابط استاتیک** | از `./frontend` توسط همان سرور FastAPI |
 
 ---
 
 ## پیش‌نیازها
 
 1. **Python 3.10+**
-2. **[Ollama](https://ollama.com)**
+2. **[Ollama](https://ollama.com)** در حال اجرا
 
 ```bash
 ollama pull qwen2.5:7b
 ollama run qwen2.5
-ollama pull nomic-embed-text
 ```
+
+**مدل‌های مناسب فارسی:**
+
+- `ollama run mshojaei77/gemma3persian`
+- `ollama run partai/dorna-llama3`
 
 ---
 
 ## راه‌اندازی
 
+از ریشه پروژه (`ollama-chat-rag/`):
+
+### ۱. محیط مجازی و وابستگی‌ها
+
 ```bash
 cd backend
 python -m venv venv
+```
+
+**ویندوز:**
+
+```cmd
 venv\Scripts\pip install -r requirements.txt
 ```
 
-اجرا: `run-server.bat` یا:
+**لینوکس / macOS:**
 
-```cmd
-cd backend
-venv\Scripts\python -m uvicorn main:app --host 0.0.0.0 --port 8765
+```bash
+source venv/bin/activate
+pip install -r requirements.txt
 ```
 
-مرورگر: **http://localhost:8765**
+### ۲. اجرای سرور
 
----
+**ویندوز** — از ریشه پروژه:
 
-## RAG
+```cmd
+.\run-server.bat
+```
 
-1. `ollama pull nomic-embed-text`
-2. **+ آپلود** → PDF یا DOCX
-3. **جستجو در اسناد (RAG)** را روشن کنید
+یا:
+
+```powershell
+.\run-server.ps1
+```
+
+**دستی** — از `./backend/`:
+
+```bash
+# ویندوز
+venv\Scripts\python -m uvicorn main:app --host 0.0.0.0 --port 8000
+
+# لینوکس / macOS
+venv/bin/python -m uvicorn main:app --host 0.0.0.0 --port 8000
+```
+
+### ۳. باز کردن رابط
+
+**http://localhost:8000**
 
 ---
 
 ## تنظیمات
 
-فایل `backend/.env`:
+اختیاری: `./backend/.env`
 
 ```env
 OLLAMA_BASE_URL=http://localhost:11434
 OLLAMA_MODEL=qwen2.5
-OLLAMA_EMBED_MODEL=nomic-embed-text
+```
+
+---
+
+## ساختار پروژه
+
+```
+ollama-chat-rag/
+├── backend/
+│   ├── main.py
+│   ├── config.py
+│   └── requirements.txt
+├── frontend/
+│   ├── index.html
+│   ├── style.css
+│   └── app.js
+├── run-server.bat
+├── run-server.ps1
+├── README.md
+├── README.fa.md
+└── LICENSE
 ```
 
 ---
@@ -81,10 +129,19 @@ OLLAMA_EMBED_MODEL=nomic-embed-text
 
 | متد | مسیر | توضیح |
 |-----|------|--------|
-| `GET` | `/api/health` | وضعیت Ollama |
-| `POST` | `/api/chat` | چت |
-| `POST` | `/api/documents/upload` | آپلود |
-| `DELETE` | `/api/documents/{id}` | حذف سند |
+| `GET` | `/api/health` | وضعیت Ollama و مدل‌های نصب‌شده |
+| `GET` | `/api/models` | لیست مدل‌ها |
+| `POST` | `/api/chat` | چت (`stream`: true برای SSE) |
+
+**نمونه** (`POST /api/chat`):
+
+```json
+{
+  "messages": [{ "role": "user", "content": "سلام" }],
+  "model": "qwen2.5",
+  "stream": true
+}
+```
 
 ---
 
