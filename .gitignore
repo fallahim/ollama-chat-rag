@@ -1,0 +1,14 @@
+__pycache__/
+*.py[cod]
+venv/
+.venv/
+.env
+.env.*
+backend/data/uploads/
+backend/data/rag_index.json
+.idea/
+.vscode/
+Thumbs.db
+.DS_Store
+out/
+*.log
